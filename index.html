@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Cricket Game</title>
+   <link rel="stylesheet" href="cricket.css">
+</head>
+<body>
+    
+    <h1><strong>Bat Ball Stump Game</strong></h1> 
+    
+<!--user choosing bat-->
+    <button class="choice-button" onclick="
+       let computerChoice=generateCompChoice();
+       let Result= getResult('Bat',computerChoice);
+       Display('Bat',computerChoice,Result);
+    "><img src="images/Bat.jpg" alt="Bat" class="choice-img"></button>
+
+<!--user choosing ball-->
+    <button  class="choice-button" onclick="
+      computerChoice=generateCompChoice();
+      Result=getResult('Ball',computerChoice);
+      Display('Ball',computerChoice,Result);
+    "><img src="images/ball.jpeg" alt="Bat" class="choice-img"></button>
+    
+<!--user choosing stump-->
+    <button  class="choice-button" onclick="computerChoice=generateCompChoice();
+        Result=getResult('Stump',computerChoice);
+       Display('Stump',computerChoice,Result);
+     "><img src="images/stump.jpeg" alt="Bat" class="choice-img"></button>
+    
+<!--Refresh button-->
+     <div   id="reset"><button   onclick="localStorage.clear();
+     reset();
+     ">Reset</button>
+     </div>
+    
+<div id="result-show">
+<h3 id="user-move"></h3>
+     <h3 id="computer-move"></h3>
+     <h3 id="result"></h3>
+     <h3 id="display"></h3>
+    </div>
+     <!-- Rules Button -->
+     <button id="rules-btn" class="rules-button">Show Rules</button>
+      <!-- Popup for Rules -->
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <span class="close-btn">&times;</span>
+            <h2>Game Rules</h2>
+            <p>This is a simple bat-ball-stump game:</p>
+            <ul>
+                <li><strong>Bat vs Ball:</strong> Bat wins.</li>
+                <li><strong>Ball vs Stump:</strong> Ball wins.</li>
+                <li><strong>Stump vs Bat:</strong> Stump wins.</li>
+                <li><strong>Same Choice:</strong> It's a tie!</li>
+            </ul>
+        </div>
+    </div>
+   <script>
+    let scorestr=localStorage.getItem('score');
+    let score;
+    reset(scorestr);
+    function reset(scorestr){
+        score =scorestr?JSON.parse(scorestr):{
+        win:0,
+        loss:0,
+        tie:0,
+    }; 
+   // Display the reset score immediately
+   Display('','','Game reset!');  
+    }
+   
+    //if(scorestr!==undefined )
+   
+    
+    function generateCompChoice() {
+        let randomNumber=Math.random()*3;
+        if(randomNumber>0 && randomNumber<=1){
+            return 'Bat';
+        }else if(randomNumber>1 && randomNumber<=2){
+            return  'Ball';
+        }else{
+            return 'Stump';
+        }   
+    }
+    
+    function getResult(userMove, computerMove){
+        
+        
+        if(userMove==='Bat'){
+    
+            if(computerMove==='Bat'){
+                score.tie++;
+                return' Its a Tie';
+            }else if (computerMove==='Ball'){
+                score.win++;
+                return'User won';
+            }else{
+                score.loss++;
+                return'computer Won';
+            }
+        
+        }else if(userMove==='Ball'){
+            if(computerMove==='Stump'){
+                score.win++;
+               return'User won';
+            }else if(computerMove==='Ball'){
+                score.tie++;
+               return' Its a Tie';
+            }else{
+                score.loss++;
+              return'computer Won';
+            }
+        }else if(userMove==='Stump'){
+           if(computerMove==='Ball'){
+            score.win++;
+                 return 'User won';
+           }else if(computerMove==='Stump'){
+            score.tie++;
+               return ' Its a Tie';
+           }else{
+                score.loss++;
+                return 'computer Won';   
+           }    
+        }   
+    }
+    function Display(userMove,computerChoice,Result){
+        
+        localStorage.setItem('score',JSON.stringify(score));
+          document.querySelector('#user-move').innerText=  userMove ?`You chose ${userMove}`:'';
+          document.querySelector('#computer-move').innerText=computerChoice?`Computer chose ${computerChoice}`:'';
+          document.querySelector('#result').innerText=`${Result}.`;
+          document.querySelector('#display').innerText= `matches: ${score.win + score.loss + score.tie}, Won: ${score.win}, Loss: ${score.loss}, Tie: ${score.tie}`;
+        
+    }
+       // Popup rules functionality
+       const popup = document.getElementById('popup');
+        const rulesBtn = document.getElementById('rules-btn');
+        const closeBtn = document.querySelector('.close-btn');
+
+        rulesBtn.onclick = function() {
+            popup.style.display = 'block';
+        }
+
+        closeBtn.onclick = function() {
+            popup.style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target === popup) {
+                popup.style.display = 'none';
+            }
+        }
+    
+   </script>
+</body>
+</html>
